@@ -1,35 +1,11 @@
 import { Component } from '@angular/core';
+import {UserServices} from '../services/user.services';
 
 @Component({
-  selector: 'user',
-  template: `<H1>name {{name}}</H1>
-    <p>email {{email}}</p>
-    <p>Address {{address.street}} {{address.city}} {{address.state}} {{address.zip}}</p>
-    <button (click) = "toggleHobbies()">{{showHobbies ? "Hide Hobbies" : "Show Hobbies"}}</button>
-    <div *ngIf = "showHobbies">
-        <ul>
-            <li *ngFor = "let Hobby of hobbies;let i = index">{{Hobby}} <button (click) = "deleteHobby(i)">X</button></li>
-        </ul>
-        <form (submit) = "addHobby(Hobby.value)">
-            <label>Add Hobby </label><input type = "text" #Hobby> <br /> 
-        </form>
-    </div>
-    <H3>Edit User</H3>
-    <form>
-        <label>Name: </label>
-        <input type = "text" name = "name" [(ngModel)] = "name"/> <br />
-        <label>Email: </label>
-        <input type = "text" name = "email" [(ngModel)] = "email"/> <br />
-        <label>Street: </label>
-        <input type = "text" name = "address.street" [(ngModel)] = "address.street"/> <br />
-        <label>City: </label>
-        <input type = "text" name = "address.city" [(ngModel)] = "address.city"/> <br />
-        <label>State: </label>
-        <input type = "text" name = "address.state" [(ngModel)] = "address.state"/> <br />
-        <label>Zip: </label>
-        <input type = "text" name = "address.zip" [(ngModel)] = "address.zip"/> <br />
-    </form>
-    `,
+    moduleId : module.id,
+    selector : 'user',
+    templateUrl: `user.component.html`,
+    providers : [UserServices]
 })
 export class UserComponent  { 
     name : string;
@@ -37,7 +13,8 @@ export class UserComponent  {
     address : address;
     hobbies : string[];
     showHobbies : boolean;
-    constructor()
+    users : User[];
+    constructor(private userServices : UserServices)
     {
         this.name = 'Angular';
         this.email = "Angular2@gmail.com";
@@ -49,6 +26,10 @@ export class UserComponent  {
         zip : '78787878'
         };
         this.hobbies = ['cricket','football'];
+        this.showHobbies = false;
+        this.userServices.getPosts().subscribe(posts => {
+            this.users = posts;
+        });
     }
     toggleHobbies()
     {
@@ -76,3 +57,8 @@ interface address {
     state : string;
     zip : string
 };
+interface User{
+    id: string;
+    title:string;
+    body:string;
+}
